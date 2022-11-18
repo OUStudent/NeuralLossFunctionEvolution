@@ -53,41 +53,6 @@ print("installing networkx")
 install("networkx")
 print("Installed ...")
 
-
-class OneCycleFinder(Callback):
-
-    def __init__(self, min_lr, max_lr, steps, use_mom=False):
-        super(OneCycleFinder, self).__init__()
-        self.min_lr = min_lr
-        self.max_lr = max_lr
-        self.steps = steps
-        self.use_mom = use_mom
-        self.lr_rise = (((self.max_lr - self.min_lr) / self.steps) * np.asarray(range(0, self.steps)) + self.min_lr)
-        self.lr_fall = (((self.min_lr - self.max_lr) / self.steps) * np.asarray(range(0, self.steps)) + self.max_lr)
-        self.lr = np.concatenate((self.lr_rise, self.lr_fall))
-
-        self.mom_fall = (((0.85 - 0.95) / self.steps) * np.asarray(range(0, self.steps)) + 0.95)
-        self.mom_rise = (((0.95 - 0.85) / self.steps) * np.asarray(range(0, self.steps)) + 0.85)
-        self.mom = np.concatenate((self.mom_fall, self.mom_rise))
-
-        self.index = 0
-        self.loss = []
-        self.accuracy = []
-
-    def on_batch_end(self, batch, logs=None):
-        if self.index < len(self.lr):
-            if self.use_mom:
-                K.set_value(self.model.optimizer.momentum, self.mom[self.index])
-            K.set_value(self.model.optimizer.lr, self.lr[self.index])
-        else:
-            if self.use_mom:
-                K.set_value(self.model.optimizer.momentum, self.mom[-1])
-            K.set_value(self.model.optimizer.lr, self.lr[-1])
-        self.index += 1
-        self.loss.append(logs['loss'])
-        self.accuracy.append(logs['accuracy'])
-
-
 import networkx as nx
 
 def FusedMBConv(prev, t, filters, strides, act):
