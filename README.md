@@ -1,4 +1,4 @@
-# NeuralLossFunctionEvolution
+# Neural Loss Function Evolution for Large Scale Image Classifier Convolutional Neural Networks
 
 # Reproducing Results
 
